@@ -75,8 +75,7 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         setSize(1280, 720);
-        setBackground(Color.GRAY);
-        setForeground(Color.WHITE);
+        setBackground(new Color(150,150,150));
         setFocusable(true);
         requestFocus();
         setVisible(true);
