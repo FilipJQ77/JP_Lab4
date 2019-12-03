@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * TODO DOKUMENTACJA
+ * Klasa reprezentująca linię komunikacji miejskiej.
  */
 public class TransportLine implements Serializable {
 
@@ -17,6 +17,9 @@ public class TransportLine implements Serializable {
     public static final byte TRAM = 2;
 
     private String lineNumber; // String bo np. 0L, 0P
+    /**
+     * Ostatni przystanek linii
+     */
     private String destination;
     private byte transportType;
     private ArrayList<Vertex> stations;
@@ -28,11 +31,20 @@ public class TransportLine implements Serializable {
         this.stations = new ArrayList<>();
     }
 
+    /**
+     * Dodaje na sam koniec linii następny przystanek
+     * @param station przystanek do dodania
+     */
     public void addStation(Vertex station) {
         stations.add(station);
         destination = station.toString();
     }
 
+    /**
+     * Sprawdza, czy dany przystanek jest już w linii
+     * @param station przystanek
+     * @return czy przystanek jest już w linii
+     */
     public boolean containsStation(Vertex station) {
         for (Vertex vertex : stations) {
             if (station == vertex) return true;
@@ -40,6 +52,11 @@ public class TransportLine implements Serializable {
         return false;
     }
 
+    /**
+     * Sprawdza, czy linia jedzie danym połączeniem
+     * @param connection połączenie
+     * @return czy linia jedzie danym połączeniem
+     */
     public boolean containsConnection(Edge connection) {
         Vertex firstVertex = connection.getFirstVertex();
         Vertex secondVertex = connection.getSecondVertex();
@@ -54,6 +71,10 @@ public class TransportLine implements Serializable {
         return false;
     }
 
+    /**
+     * Zwraca listę wszystkich stacji po przecinku
+     * @return lista wszystkich stacji po przecinku
+     */
     public String listOfStations() {
         StringBuilder stringBuilder = new StringBuilder();
         for (Vertex vertex : stations) {

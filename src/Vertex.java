@@ -9,7 +9,7 @@ import java.awt.*;
 import java.io.Serializable;
 
 /**
- * TODO DOKUMENTACJA
+ * Klasa reprezntująca wierzchołek grafu, a zarazem przystanek.
  */
 public class Vertex implements IMoving, Serializable {
 
@@ -35,6 +35,10 @@ public class Vertex implements IMoving, Serializable {
         this.color = color;
     }
 
+    /**
+     * Rysuje wierzchołek.
+     * @param g obiekt klasy Graphics odpowiedzialny za rysowanie
+     */
     public void draw(Graphics g) {
         g.setColor(color);
         g.fillOval(x - r, y - r, 2 * r, 2 * r);
@@ -44,7 +48,7 @@ public class Vertex implements IMoving, Serializable {
     }
 
     /**
-     * przesuwa wierzchołek
+     * Przesuwa wierzchołek
      *
      * @param dx o ile pikseli w prawo
      * @param dy o ile pikseli w górę
@@ -55,6 +59,12 @@ public class Vertex implements IMoving, Serializable {
         y -= dy;
     }
 
+    /**
+     * Sprawdza, czy dane współrzędne punktu leżą w wierzchołku
+     * @param px współrzędna x punktu
+     * @param py współrzędna y punktu
+     * @return czy punkt należy do wierzchołka
+     */
     public boolean isPointInVertex(int px, int py) {
         return (px - x) * (px - x) + (py - y) * (py - y) <= r * r;
     }

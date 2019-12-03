@@ -12,7 +12,7 @@ import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
 
 /**
- * Klasa która reprezentuje połączenie między dwoma wierzchołkami grafu
+ * Klasa która reprezentuje połączenie między dwoma wierzchołkami grafu, a zarazem połączenie między dwoma przystankami.
  */
 public class Edge implements IMoving, Serializable {
 
@@ -29,9 +29,9 @@ public class Edge implements IMoving, Serializable {
     }
 
     /**
-     * rysuje krawędź
+     * Rysuje krawędź.
      *
-     * @param g
+     * @param g obiekt klasy Graphics odpowiedzialny za rysowanie
      */
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
@@ -42,7 +42,7 @@ public class Edge implements IMoving, Serializable {
     }
 
     /**
-     * przesuwa krawędź
+     * Przesuwa krawędź.
      *
      * @param dx o ile pikseli w prawo
      * @param dy o ile pikseli w górę
@@ -53,6 +53,12 @@ public class Edge implements IMoving, Serializable {
         secondVertex.move(dx, dy);
     }
 
+    /**
+     * Sprawdza, czy dane współrzędne są na krawędzi (wystarczająco blisko krawędzi, bo margines błędu).
+     * @param px współrzędna x punktu
+     * @param py współrzędna y punktu
+     * @return czy punkt jest na tej krawędzi
+     */
     public boolean isPointOnEdge(int px, int py) {
         int x1 = firstVertex.getX();
         int y1 = firstVertex.getY();

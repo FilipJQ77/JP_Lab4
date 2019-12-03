@@ -6,7 +6,7 @@
 */
 
 /**
- * TODO DOKUMENTACJA
+ * interfejs odpowiadający za poruszanie się obiektów
  */
 public interface IMoving {
 

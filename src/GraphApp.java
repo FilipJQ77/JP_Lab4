@@ -11,9 +11,10 @@ import java.awt.event.ActionListener;
 import java.io.*;
 
 /**
- * TODO DOKUMENTACJA
+ * Aplikacja pozwalająca działać na liniach komunikacji miejskiej, i je wyświetlać na mapie
  */
 public class GraphApp extends JFrame implements ActionListener {
+
     //TODO spróbować zrobić znalezienie trasy z X do Y
     private static final String TITLE = "Mapa komunikacji miejskiej";
     private static final String AUTHOR = "Autor: Filip Przygoński, 248892, Grudzień 2019";
@@ -32,6 +33,7 @@ public class GraphApp extends JFrame implements ActionListener {
             "Numpad '+' i Numpad '-' - jeśli zaznaczono przystanek, odpowiednio powiększają i pomniejszają przystanek\n" +
             "\n" +
             "Przeciąganie myszką - przesuwanie grafu, lub przystanku/połączenia jeśli kursor na nim się znajduje\n" +
+            "Scroll myszką - zoom in/out względem lewego górnego rogu\n" +
             "Kliknięcie LPM na przystanek/połączenie - zaznaczenie przystanku/połączenia\n" +
             "Kliknięcie PPM na przystanek - możliwość edycji/usunięcia danego przystanku, dodatkowe informacje o przystanku\n" +
             "Kliknięcie PPM na połączenie - dodatkowe informacje o połączeniu\n" +
@@ -104,6 +106,10 @@ public class GraphApp extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+    /**
+     *
+     * @return plik wybrany przez użytkownika
+     */
     private File chooseFile() {
         File file = null;
         JFileChooser fileChooser = new JFileChooser();
@@ -113,6 +119,10 @@ public class GraphApp extends JFrame implements ActionListener {
         return file;
     }
 
+    /**
+     * wczytuje graf z pliku
+     * @param file dany plik
+     */
     private void loadGraphFromFile(File file) {
         try {
             ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file));
@@ -120,6 +130,20 @@ public class GraphApp extends JFrame implements ActionListener {
             graphPanel.setGraph(graph);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Wystąpił błąd podczas odczytu", "Błąd", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+    }
+
+    /**
+     * zapisuje obecny graf do pliku
+     * @param file dany plik
+     */
+    private void saveGraphToFile(File file) {
+        try {
+            ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file));
+            outputStream.writeObject(graphPanel.getGraph());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Wystąpił błąd podczas zapisu", "Błąd", JOptionPane.ERROR_MESSAGE);
             return;
         }
     }
@@ -138,13 +162,7 @@ public class GraphApp extends JFrame implements ActionListener {
             loadGraphFromFile(file);
         } else if (sourceOfEvent == menuSave) {
             File file = chooseFile();
-            try {
-                ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file));
-                outputStream.writeObject(graphPanel.getGraph());
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Wystąpił błąd podczas zapisu", "Błąd", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+            saveGraphToFile(file);
         } else if (sourceOfEvent == menuShowStations) {
             graphPanel.showStations();
         } else if (sourceOfEvent == menuShowTransportLineStations) {

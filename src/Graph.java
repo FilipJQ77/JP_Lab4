@@ -11,14 +11,25 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
- * TODO DOKUMENTACJA
+ * Klasa reprezentująca graf linii transportu miejskiego
  */
 public class Graph implements Serializable, IMoving {
 
     private static final long serialVersionUID = 5922347028700915406L;
 
+    /**
+     * wszystkie stacje
+     */
     private ArrayList<Vertex> stations;
+
+    /**
+     * wszystkie linie transportu
+     */
     private ArrayList<TransportLine> transportLines;
+
+    /**
+     * wszystkie połączenia między dwoma przystankami
+     */
     private ArrayList<Edge> connections;
 
     public Graph() {
@@ -27,6 +38,11 @@ public class Graph implements Serializable, IMoving {
         this.connections = new ArrayList<>();
     }
 
+    /**
+     * dodaje przystanek, jednocześnie sortując listę wszystkich przystanków alfabrtycznie
+     *
+     * @param station
+     */
     public void addStation(Vertex station) {
         stations.add(station);
         Comparator<Vertex> comparator = (station1, station2) -> {
@@ -56,6 +72,11 @@ public class Graph implements Serializable, IMoving {
         return true;
     }
 
+    /**
+     * dodaje nową linię transportu, jednocześnie sortuje listę linii transportu według numeru linii, oraz zaznacza linię na grafie odpowiednim kolorem
+     *
+     * @param transportLine nowa linia transportu
+     */
     public void addTransportLine(TransportLine transportLine) {
         transportLines.add(transportLine);
         Comparator<TransportLine> comparator = (transportLine1, transportLine2) -> {
@@ -108,6 +129,11 @@ public class Graph implements Serializable, IMoving {
         }
     }
 
+    /**
+     * usuwa daną linię transportu
+     *
+     * @param transportLine linia transportu do usunięcia
+     */
     public void removeTransportLine(TransportLine transportLine) {
         //mało optymalne, ale działa
         ArrayList<TransportLine> newTransportLines = new ArrayList<>();
@@ -123,11 +149,23 @@ public class Graph implements Serializable, IMoving {
         }
     }
 
+    /**
+     * dodaje nowe połączenie między przystankami
+     *
+     * @param station1 pierwszy przystanek
+     * @param station2 drugi przystanek
+     * @param color    kolor połączenia, zależy od rodzaju transportu
+     */
     private void addConnection(Vertex station1, Vertex station2, Color color) {
         Edge newEdge = new Edge(station1, station2, color);
         connections.add(newEdge);
     }
 
+    /**
+     * rysuje cały graf
+     *
+     * @param g obiekt klasy Graphics odpowiedzialny za rysowanie
+     */
     public void draw(Graphics g) {
         for (Edge connection : connections) {
             connection.draw(g);
@@ -150,6 +188,13 @@ public class Graph implements Serializable, IMoving {
         }
     }
 
+    /**
+     * metoda sprawdzająca, czy dane współrzędne punktu znajdują się na którymkolwiek wierzchołku
+     *
+     * @param mx współrzędna x punktu
+     * @param my współrzędna y punktu
+     * @return wierzchołek do którego należy dany punkt (lub null, jeśli punkt nie należy do żadnego wierzchołka)
+     */
     public Vertex returnVertexContainingAPoint(int mx, int my) {
         for (Vertex vertex : stations) {
             if (vertex.isPointInVertex(mx, my)) return vertex;
@@ -157,6 +202,12 @@ public class Graph implements Serializable, IMoving {
         return null;
     }
 
+    /**
+     * metoda sprawdzająca, czy dane współrzędne punktu znajdują się na którejkolwiek krawędzi
+     * @param mx współrzędna x punktu
+     * @param my współrzędna y punktu
+     * @return krawędź do której należy dany punkt (lub null, jeśli punkt nie należy do żadnej krawędzi)
+     */
     public Edge returnEdgeContainingAPoint(int mx, int my) {
         for (Edge edge : connections) {
             if (edge.isPointOnEdge(mx, my)) return edge;

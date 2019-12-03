@@ -12,7 +12,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 /**
- * TODO DOKUMENTACJA
+ * Pomocnicza tabela wyświetlająca różne informacje
  */
 class TableFrame extends JFrame {
 
@@ -20,6 +20,12 @@ class TableFrame extends JFrame {
     JTable table;
     JScrollPane scrollPane;
 
+    /**
+     *
+     * @param title tytuł okienka
+     * @param tableHeader opis kolumn
+     * @param arrayLists informacje które mają zostać wyświetlone
+     */
     TableFrame(String title, String[] tableHeader, ArrayList<ArrayList<String>> arrayLists) {
         super(title);
         setSize(1000, 600);
@@ -55,17 +61,33 @@ class TableFrame extends JFrame {
 }
 
 /**
- * TODO DOKUMENTACJA
+ * Klasa odpowiadająca za wyświetlanie grafu
  */
-public class GraphPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
+public class GraphPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
 
     private Graph graph;
+
+    /**
+     * obecnie zaznaczony przystanek
+     */
     private Vertex currentVertex;
+
+    /**
+     * obecnie zaznaczone połączenie
+     */
     private Edge currentEdge;
 
     private int mouseX;
     private int mouseY;
+
+    /**
+     * boolean pamiętający, czy jest trzymany lewy przycisk myszki podczas przesuwania myszki
+     */
     private boolean dragging;
+
+    /**
+     * boolean pamiętający, czy jakaś linia transportu jest zaznaczona
+     */
     private boolean lineHighlighted;
 
     public GraphPanel() {
@@ -74,37 +96,53 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         this.addKeyListener(this);
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+        this.addMouseWheelListener(this);
         setSize(1280, 720);
-        setBackground(new Color(150,150,150));
+        setBackground(new Color(150, 150, 150));
         setFocusable(true);
         requestFocus();
         setVisible(true);
     }
 
+    /**
+     * zaznacza przystanek (powiększa go)
+     */
     private void highlightVertex() {
         if (currentVertex != null) {
             currentVertex.setR(currentVertex.getR() + 5);
         }
     }
 
+    /**
+     * odznacza przystanek (pomniejsza go)
+     */
     private void unhighlightVertex() {
         if (currentVertex != null) {
             currentVertex.setR(currentVertex.getR() - 5);
         }
     }
 
+    /**
+     * zaznacza połączenie (powiększa je)
+     */
     private void highlightEdge() {
         if (currentEdge != null) {
             currentEdge.setWidth(currentEdge.getWidth() + 3);
         }
     }
 
+    /**
+     * odznacza połączenie (pomniejsza je)
+     */
     private void unhighlightEdge() {
         if (currentEdge != null) {
             currentEdge.setWidth(currentEdge.getWidth() - 3);
         }
     }
 
+    /**
+     * metoda zajmująca się usuwaniem stacji
+     */
     private void removeStation() {
         if (!graph.removeStation(currentVertex)) {
             JOptionPane.showMessageDialog(this, "Nie można usunąć przystanku przez który przejeżdżają jakiekolwiek linie!", "Błąd", JOptionPane.ERROR_MESSAGE);
@@ -114,10 +152,10 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
     }
 
     /**
-     * jeśli kliknięto na jakiś element, to jest on zaznaczony i zapamiętany
+     * jeśli kliknięto LPM na jakiś element, to jest on zaznaczony i zapamiętany
      *
-     * @param x
-     * @param y
+     * @param x współrzędna x punktu kliknięcia
+     * @param y współrzędna y punktu kliknięcia
      */
     void leftClick(int x, int y) {
         unhighlightVertex();
@@ -132,11 +170,22 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         highlightEdge();
     }
 
+    /**
+     * jeśli kliknięto PPM na jakiś element, to jest on zaznaczony, zapamiętany, i wyskakuje popup menu pozwalające na edycję/wyświetlenie dodatkowych informacji o elemencie
+     *
+     * @param x współrzędna x punktu kliknięcia
+     * @param y współrzędna y punktu kliknięcia
+     */
     void rightClick(int x, int y) {
         leftClick(x, y);
         createPopupMenu(x, y);
     }
 
+    /**
+     * zajmuje się tworzeniem popup menu
+     * @param x współrzędna x punktu kliknięcia
+     * @param y współrzędna y punktu kliknięcia
+     */
     void createPopupMenu(int x, int y) {
         JPopupMenu menu = new JPopupMenu();
         if (currentVertex != null) {
@@ -232,12 +281,19 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         unhighlightTransportLine();
     }
 
+    /**
+     *
+     * @return który obiekt powinien zostać poruszony
+     */
     IMoving objectToMove() {
         if (currentVertex != null) return currentVertex;
         else if (currentEdge != null) return currentEdge;
         else return graph;
     }
 
+    /**
+     * tworzy nowe okno i wyświetla w nim wszystkie stacje oraz liczbę linii zatrzymujących się tam
+     */
     void showStations() {
         ArrayList<String> stationsList = new ArrayList<>();
         ArrayList<String> stationsAmountOfLineslist = new ArrayList<>();
@@ -252,13 +308,16 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
             }
             stationsAmountOfLineslist.add(String.valueOf(howManyLines));
         }
-        String[] tableHeader = {"Nazwa przystanku", "Ilość linii zatrzymujących przez ten przystanek"};
+        String[] tableHeader = {"Nazwa przystanku", "Ilość linii zatrzymujących się na tym przystanku"};
         ArrayList<ArrayList<String>> data = new ArrayList<>();
         data.add(stationsList);
         data.add(stationsAmountOfLineslist);
         new TableFrame("Wszystkie przystanki", tableHeader, data);
     }
 
+    /**
+     * tworzy nowe okno i wyświetla w nim wszystkie przystanki wybranej linii
+     */
     void showTransportLineStations() {
         ArrayList<TransportLine> transportLines = graph.getTransportLines();
         TransportLine transportLine = (TransportLine) JOptionPane.showInputDialog(this, "Wybierz linię", "", JOptionPane.PLAIN_MESSAGE, null, transportLines.toArray(), null);
@@ -279,6 +338,9 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         new TableFrame("Przystanki linii " + transportLine.getLineNumber() + " " + transportLine.getDestination(), tableHeader, data);
     }
 
+    /**
+     * zajmuje się tworzeniem przez użytkownika nowej linii transportu
+     */
     void createTransportLine() {
         String lineNumber = JOptionPane.showInputDialog(this, "Podaj numer linii", "", JOptionPane.PLAIN_MESSAGE);
         if (lineNumber == null)
@@ -301,6 +363,9 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         repaint();
     }
 
+    /**
+     * zajmuje się edytowaniem przez użytkownika danej linii transportu
+     */
     void editTransportLine() {
         TransportLine transportLine = (TransportLine) JOptionPane.showInputDialog(this, "Wybierz którą linię chcesz edytować", "", JOptionPane.PLAIN_MESSAGE, null, graph.getTransportLines().toArray(), null);
         if (transportLine != null) {
@@ -327,6 +392,10 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         }
     }
 
+    /**
+     * zajmuje się edytowaniem przez użytkownika listy przystanków danej linii
+     * @param transportLine
+     */
     void editTransportLineStations(TransportLine transportLine) {
         transportLine.setStations(new ArrayList<>());
         ArrayList<Vertex> stations = graph.getStations();
@@ -335,16 +404,17 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
             return;
         }
         boolean isVertexAdded = true;
-        StringBuilder stringBuilder = new StringBuilder();
         while (isVertexAdded) {
-            Vertex newVertex = (Vertex) JOptionPane.showInputDialog(this, "Podaj następny przystanek i kliknij OK, kliknij Cancel gdy zostały dodane wszystkie przystanki\nObecne przystanki linii: " + stringBuilder.toString(), "Lista przystanków linii", JOptionPane.PLAIN_MESSAGE, null, stations.toArray(), null);
+            Vertex newVertex = (Vertex) JOptionPane.showInputDialog(this, "Podaj następny przystanek i kliknij OK, kliknij Cancel gdy zostały dodane wszystkie przystanki\nObecne przystanki linii: " + transportLine.listOfStations(), "Lista przystanków linii", JOptionPane.PLAIN_MESSAGE, null, stations.toArray(), null);
             if (newVertex != null) {
                 transportLine.addStation(newVertex);
-                stringBuilder.append(newVertex.toString()).append(", ");
             } else isVertexAdded = false;
         }
     }
 
+    /**
+     * użytkownik wybiera, którą linię podświetlić na czerwono, wtedy wszystkie inne linie będą szare
+     */
     void highlightTransportLine() {
         TransportLine transportLine = (TransportLine) JOptionPane.showInputDialog(this, "Wybierz którą linię chcesz wyróżnić", "", JOptionPane.PLAIN_MESSAGE, null, graph.getTransportLines().toArray(), null);
         if (transportLine != null) {
@@ -361,12 +431,15 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         }
     }
 
+    /**
+     * ustawia wszystkim liniom domyślny kolor
+     */
     void unhighlightTransportLine() {
         if (lineHighlighted) {
             ArrayList<TransportLine> transportLines = graph.getTransportLines();
             int transportLinesSize = transportLines.size();
             for (int i = 0; i < transportLinesSize; ++i) {
-                //TODO można to lepiej zrobić
+                //TODO na pewno można to optymalniej zrobić
                 TransportLine transportLine = transportLines.get(0);
                 graph.removeTransportLine(transportLine);
                 graph.addTransportLine(transportLine);
@@ -375,12 +448,18 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         }
     }
 
+    /**
+     * usunięcie wybranej przez użytkownika linii
+     */
     void deleteTransportLine() {
         TransportLine transportLine = (TransportLine) JOptionPane.showInputDialog(this, "Wybierz którą linię chcesz usunąć", "", JOptionPane.PLAIN_MESSAGE, null, graph.getTransportLines().toArray(), null);
         graph.removeTransportLine(transportLine);
         repaint();
     }
 
+    /**
+     * tworzy nowe okno i wyświetla w nim wszystkie linie oraz liczbę ich przystanków
+     */
     void showTransportLines() {
         ArrayList<TransportLine> transportLines = graph.getTransportLines();
         ArrayList<String> lineNumbers = new ArrayList<>();
@@ -399,6 +478,10 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         new TableFrame("Wszystkie linie", tableHeader, data);
     }
 
+    /**
+     * zajmuje się wyborem odpowiedniej akcji w zależności od naciśniętego klawisza
+     * @param e event naciśnięcia klawisza
+     */
     void keyPressedHandling(KeyEvent e) {
         int key = e.getKeyCode();
         byte dist = 1;
@@ -437,6 +520,10 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         }
     }
 
+    /**
+     * zajmuje się wyborem odpowiedniej akcji w zależności od naciśniętego przycisku myszki
+     * @param e
+     */
     void mouseClickedHandling(MouseEvent e) {
         int pressedButton = e.getButton();
         mouseX = e.getX();
@@ -448,6 +535,10 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         }
     }
 
+    /**
+     * jeśli LPM jest trzymany to będzie można przesuwać przystanek/połączenie/graf
+     * @param e
+     */
     void mousePressedHandling(MouseEvent e) {
         int pressedButton = e.getButton();
         mouseX = e.getX();
@@ -458,11 +549,19 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         }
     }
 
+    /**
+     * jeśli LPM jest puszczony to nie można już przesuwać przystanku/połączenia/grafu
+     * @param e
+     */
     void mouseReleasedHandling(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1)
             dragging = false;
     }
 
+    /**
+     * jeśli LPM jest trzymany, to przesuwa przystanek/połączenie/graf
+     * @param e
+     */
     void mouseDraggedHandling(MouseEvent e) {
         int newMouseX = e.getX();
         int newMouseY = e.getY();
@@ -471,6 +570,25 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         }
         mouseX = newMouseX;
         mouseY = newMouseY;
+    }
+
+    /**
+     * jeśli wykryto scroll myszki, odpowiednio dzieje się zoom in albo zoom out
+     * @param e
+     */
+    void mouseWheelMovedHandling(MouseWheelEvent e) {
+        int wheelRotation = e.getWheelRotation();
+        ArrayList<Vertex> vertices = graph.getStations();
+        boolean zoomIn = wheelRotation > 0;
+        double zoomInOrOut;
+        if (zoomIn) zoomInOrOut = 0.9;
+        else zoomInOrOut = 1.1;
+        for (Vertex vertex : vertices) {
+            int newX=(int) (zoomInOrOut * vertex.getX());
+            int newY=(int) (zoomInOrOut * vertex.getY());
+            vertex.setX(newX);
+            vertex.setY(newY);
+        }
     }
 
     @Override
@@ -534,13 +652,21 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
         return;
     }
 
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        mouseWheelMovedHandling(e);
+        repaint();
+    }
+
     public Graph getGraph() {
         return graph;
     }
 
     public void setGraph(Graph graph) {
-        this.graph = graph;
-        repaint();
+        if (graph != null) {
+            this.graph = graph;
+            repaint();
+        }
     }
 
     public Vertex getCurrentVertex() {
