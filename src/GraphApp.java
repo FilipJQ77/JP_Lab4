@@ -15,9 +15,27 @@ import java.io.*;
  */
 public class GraphApp extends JFrame implements ActionListener {
     //TODO spróbować zrobić znalezienie trasy z X do Y
-    public static final String TITLE = "Mapa komunikacji miejskiej";
-    public static final String AUTHOR = "Autor: Filip Przygoński, 248892, Grudzień 2019";
-    public static final String HELP = "";//TODO INSTRUKCJA
+    private static final String TITLE = "Mapa komunikacji miejskiej";
+    private static final String AUTHOR = "Autor: Filip Przygoński, 248892, Grudzień 2019";
+    private static final String HELP = "OPIS PROGRAMU\n" +
+            "\n" +
+            "Program pokazuje mapę linii komunikacji miejskiej, reprezentując ją jako zbiór wierzchołków grafu (przystanki) i krawędzie grafu (połączenia między przystankami).\n" +
+            "Pojedyncza linia to uporządkowana lista przystanków, W JEDNĄ STRONĘ. Czyli np. 145 Sępolno i 145 Iwiny Rondo to w programie dwie osobne linie.\n" +
+            "Użytkownik może dostosować nazwy, kolory, i rozmiary każdego przystanku do swoich potrzeb.\n" +
+            "Żółty kolor połączenia oznacza że jedzie tędy autobus, niebieski - tramwaj, a zielony że oba środki transportu są dostępne. Im grubsza krawędź, tym więcej połączeń.\n" +
+            "Program pozwala dodawać, edytować, usuwać przystanki, oraz dodawać, edytować, usuwać linie transportu publicznego między stworzonymi przystankami, oraz wyświetlać dodatkowe informacje o przystankach i liniach.\n" +
+            "\n" +
+            "Klawiszologia:\n" +
+            "Strzałki - przesuwanie grafu, lub przystanku/połączenia jeśli zostało zaznaczone\n" +
+            "Shift - przesuwa 10x szybciej\n" +
+            "Delete - usuwa przystanek, jeśli takowy zaznaczono, i jeśli nie przejeżdżają przez niego żadne linie\n" +
+            "Numpad '+' i Numpad '-' - jeśli zaznaczono przystanek, odpowiednio powiększają i pomniejszają przystanek\n" +
+            "\n" +
+            "Przeciąganie myszką - przesuwanie grafu, lub przystanku/połączenia jeśli kursor na nim się znajduje\n" +
+            "Kliknięcie LPM na przystanek/połączenie - zaznaczenie przystanku/połączenia\n" +
+            "Kliknięcie PPM na przystanek - możliwość edycji/usunięcia danego przystanku, dodatkowe informacje o przystanku\n" +
+            "Kliknięcie PPM na połączenie - dodatkowe informacje o połączeniu\n" +
+            "Kliknięcie PPM na nic - tworzenie nowego przystanku";
 
     GraphPanel graphPanel;
 
@@ -113,7 +131,7 @@ public class GraphApp extends JFrame implements ActionListener {
         if (sourceOfEvent == menuNewGraph) {
             graphPanel.setGraph(new Graph());
         } else if (sourceOfEvent == menuExample) {
-            File file = new File("example.bin");//TODO może lepiej zrób to w kodzie
+            File file = new File("example.bin");
             loadGraphFromFile(file);
         } else if (sourceOfEvent == menuLoad) {
             File file = chooseFile();
@@ -131,7 +149,7 @@ public class GraphApp extends JFrame implements ActionListener {
             graphPanel.showStations();
         } else if (sourceOfEvent == menuShowTransportLineStations) {
             graphPanel.showTransportLineStations();
-        }  else if (sourceOfEvent == menuNewTransportLine) {
+        } else if (sourceOfEvent == menuNewTransportLine) {
             graphPanel.createTransportLine();
         } else if (sourceOfEvent == menuEditTransportLine) {
             graphPanel.editTransportLine();

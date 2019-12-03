@@ -62,6 +62,12 @@ public class Graph implements Serializable, IMoving {
             String lineNumber1 = transportLine1.getLineNumber();
             String lineNumber2 = transportLine2.getLineNumber();
             int check = lineNumber1.compareTo(lineNumber2);
+            try {
+                int lineNumber1ToNumber = Integer.parseInt(lineNumber1);
+                int lineNumber2ToNumber = Integer.parseInt(lineNumber2);
+                check = Integer.compare(lineNumber1ToNumber, lineNumber2ToNumber);
+            } catch (Exception ignored) {
+            }
             if (check != 0) return check;
             else {
                 String destination1 = transportLine1.getDestination();

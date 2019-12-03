@@ -367,6 +367,7 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
             ArrayList<TransportLine> transportLines = graph.getTransportLines();
             int transportLinesSize = transportLines.size();
             for (int i = 0; i < transportLinesSize; ++i) {
+                //TODO można to lepiej zrobić
                 TransportLine transportLine = transportLines.get(0);
                 graph.removeTransportLine(transportLine);
                 graph.addTransportLine(transportLine);
@@ -376,7 +377,7 @@ public class GraphPanel extends JPanel implements KeyListener, MouseListener, Mo
     }
 
     void deleteTransportLine() {
-        TransportLine transportLine = (TransportLine) JOptionPane.showInputDialog(this, "Wybierz którą linię chcesz edytować", "", JOptionPane.PLAIN_MESSAGE, null, graph.getTransportLines().toArray(), null);
+        TransportLine transportLine = (TransportLine) JOptionPane.showInputDialog(this, "Wybierz którą linię chcesz usunąć", "", JOptionPane.PLAIN_MESSAGE, null, graph.getTransportLines().toArray(), null);
         graph.removeTransportLine(transportLine);
         repaint();
     }
