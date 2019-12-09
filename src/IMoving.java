@@ -1,8 +1,5 @@
 /*
-    Program: Aplikacja z możliwością działań na sieci komunikacji miejskiej
-    Plik: IMoving.java
-    Autor: Filip Przygoński, 248892
-    Data: Grudzień 2019
+Autor: Filip Przygoński
 */
 
 /**

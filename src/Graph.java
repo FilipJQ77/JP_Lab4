@@ -1,8 +1,5 @@
 /*
-    Program: Aplikacja z możliwością działań na sieci komunikacji miejskiej
-    Plik: Graph.java
-    Autor: Filip Przygoński, 248892
-    Data: Grudzień 2019
+Autor: Filip Przygoński
 */
 
 import java.awt.*;
@@ -135,7 +132,7 @@ public class Graph implements Serializable, IMoving {
      * @param transportLine linia transportu do usunięcia
      */
     public void removeTransportLine(TransportLine transportLine) {
-        //mało optymalne, ale działa
+        //TODO pomyśleć czy dałoby się optymalniej
         ArrayList<TransportLine> newTransportLines = new ArrayList<>();
         for (TransportLine line : transportLines) {
             if (line != transportLine) {
